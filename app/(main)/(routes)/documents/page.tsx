@@ -5,7 +5,7 @@ import { useUser } from "@clerk/clerk-react";
 import { PlusCircle } from "lucide-react";
 import Image from "next/image";
 
-const DocumnetsPage = () => {
+const DocumentsPage = () => {
   const { user } = useUser();
 
   return (
@@ -35,4 +35,4 @@ const DocumnetsPage = () => {
   );
 };
 
-export default DocumnetsPage;
+export default DocumentsPage;
