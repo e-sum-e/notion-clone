@@ -10,12 +10,14 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading } = useConvexAuth();
 
   if (isLoading) {
-    <div className="h-full felx items-center justify-center">
-      <Spinner size="lg" />
-    </div>;
+    return (
+      <div className="h-full flex items-center justify-center">
+        <Spinner size="lg" />
+      </div>
+    );
   }
 
-  if (!isLoading && !isAuthenticated) {
+  if (!isAuthenticated) {
     return redirect("/");
   }
 
