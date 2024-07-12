@@ -35,7 +35,7 @@ export const archive = mutation({
 
       for (const child of children) {
         await ctx.db.patch(child._id, {
-          isArchvied: true,
+          isArchived: true,
         });
 
         await recursiveArchive(child._id);
@@ -43,7 +43,7 @@ export const archive = mutation({
     };
 
     const document = await ctx.db.patch(args.id, {
-      isArchvied: true,
+      isArchived: true,
     });
 
     recursiveArchive(args.id);
@@ -57,15 +57,11 @@ export const getSidebar = query({
   },
   handler: async (ctx, args) => {
     let identity = await ctx.auth.getUserIdentity();
+    console.log("!!!!", identity);
 
-    if (identity === undefined) {
+    if (!identity) {
       throw new Error("Not Authenticated");
     }
-
-    while (identity === null) {
-      identity = await ctx.auth.getUserIdentity();
-    }
-    console.log("!!!!!!get sidebar", identity);
 
     const userId = identity.subject;
 
@@ -74,7 +70,7 @@ export const getSidebar = query({
       .withIndex("by_user_parent", (q) =>
         q.eq("userId", userId).eq("parentDocument", args.parentDocument)
       )
-      .filter((q) => q.eq(q.field("isArchvied"), false))
+      .filter((q) => q.eq(q.field("isArchived"), false))
       .order("desc")
       .collect();
 
@@ -100,7 +96,7 @@ export const create = mutation({
       title: args.title,
       parentDocument: args.parentDocument,
       userId,
-      isArchvied: false,
+      isArchived: false,
       isPublished: false,
     });
 
@@ -121,7 +117,7 @@ export const getTrash = query({
     const documents = await ctx.db
       .query("documents")
       .withIndex("by_user", (q) => q.eq("userId", userId))
-      .filter((q) => q.eq(q.field("isArchvied"), true))
+      .filter((q) => q.eq(q.field("isArchived"), true))
       .order("desc")
       .collect();
 
@@ -160,7 +156,7 @@ export const restore = mutation({
 
       for (const child of children) {
         await ctx.db.patch(child._id, {
-          isArchvied: false,
+          isArchived: false,
         });
 
         await recursiveRestore(child._id);
@@ -168,12 +164,12 @@ export const restore = mutation({
     };
 
     const options: Partial<Doc<"documents">> = {
-      isArchvied: false,
+      isArchived: false,
     };
 
     if (existingDocument.parentDocument) {
       const parent = await ctx.db.get(existingDocument.parentDocument);
-      if (parent?.isArchvied) {
+      if (parent?.isArchived) {
         options.parentDocument = undefined;
       }
     }
@@ -225,7 +221,7 @@ export const getSearch = query({
     const document = await ctx.db
       .query("documents")
       .withIndex("by_user", (q) => q.eq("userId", userId))
-      .filter((q) => q.eq(q.field("isArchvied"), false))
+      .filter((q) => q.eq(q.field("isArchived"), false))
       .order("desc")
       .collect();
 
@@ -246,7 +242,7 @@ export const getById = query({
       throw new Error("Not found");
     }
 
-    if (document.isPublished && !document.isArchvied) {
+    if (document.isPublished && !document.isArchived) {
       return document;
     }
 
