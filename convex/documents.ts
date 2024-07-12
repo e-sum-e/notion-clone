@@ -234,7 +234,6 @@ export const getById = query({
     documentId: v.id("documents"),
   },
   handler: async (ctx, args) => {
-    console.log("!!!!!!get by id");
     const identity = await ctx.auth.getUserIdentity();
     const document = await ctx.db.get(args.documentId);
 
