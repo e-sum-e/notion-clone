@@ -9,11 +9,12 @@ import { useEdgeStore } from "@/lib/edgestore";
 import { Doc } from "@/convex/_generated/dataModel";
 
 interface EditorProps {
+  isEditable: boolean;
   onChange: (value: string) => void;
   document: Doc<"documents">;
 }
 
-const Editor = ({ onChange, document }: EditorProps) => {
+const Editor = ({ isEditable = true, onChange, document }: EditorProps) => {
   const { resolvedTheme } = useTheme();
   const { edgestore } = useEdgeStore();
 
@@ -40,13 +41,16 @@ const Editor = ({ onChange, document }: EditorProps) => {
   };
 
   return (
-    <BlockNoteView
-      editor={editor}
-      theme={resolvedTheme === "dark" ? "dark" : "light"}
-      onChange={() => {
-        onChange(JSON.stringify(editor.document));
-      }}
-    />
+    <>
+      <BlockNoteView
+        editable={isEditable}
+        editor={editor}
+        theme={resolvedTheme === "dark" ? "dark" : "light"}
+        onChange={() => {
+          onChange(JSON.stringify(editor.document));
+        }}
+      />
+    </>
   );
 };
 
