@@ -57,7 +57,6 @@ export const getSidebar = query({
   },
   handler: async (ctx, args) => {
     let identity = await ctx.auth.getUserIdentity();
-    console.log("!!!!", identity);
 
     if (!identity) {
       throw new Error("Not Authenticated");
@@ -278,7 +277,7 @@ export const update = mutation({
     const userId = identity.subject;
     const { id, ...rest } = args;
 
-    const existingDocument = await ctx.db.get(args.id);
+    const existingDocument = await ctx.db.get(id);
     if (!existingDocument) {
       throw new Error("Not found");
     }
@@ -287,7 +286,7 @@ export const update = mutation({
       throw new Error("Unauthrized user id");
     }
 
-    const document = await ctx.db.patch(args.id, {
+    const document = await ctx.db.patch(id, {
       ...rest,
     });
 
