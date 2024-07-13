@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -53,6 +54,7 @@ const Item = ({
   const router = useRouter();
   const create = useMutation(api.documents.create);
   const archive = useMutation(api.documents.archive);
+  const restore = useMutation(api.documents.restore);
   const { user } = useUser();
 
   const handleExpand = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -72,7 +74,7 @@ const Item = ({
         if (!expanded) {
           onExpand?.();
         }
-        // router.push(`/document/${documentId}`);
+        router.push(`/documents/${documentId}`);
 
         toast.promise(promise, {
           loading: "Creating a new note..",
@@ -83,6 +85,18 @@ const Item = ({
     );
   };
 
+  const onRestore = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.stopPropagation();
+    if (!id) return;
+
+    const promise = restore({ id });
+    toast.promise(promise, {
+      loading: "Moving to trash..",
+      success: "Note restored!",
+      error: "Failed to archive note",
+    });
+  };
+
   const onArchive = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
     if (!id) return;
@@ -90,7 +104,14 @@ const Item = ({
     const promise = archive({ id });
     toast.promise(promise, {
       loading: "Moving to trash..",
-      success: "Note moved!",
+      success: (
+        <>
+          Note removed!
+          <Button size="sm" onClick={(e) => onRestore(e)}>
+            Cancel delete
+          </Button>
+        </>
+      ),
       error: "Failed to archive note",
     });
   };

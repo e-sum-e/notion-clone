@@ -10,7 +10,7 @@ import {
   Settings,
   Trash,
 } from "lucide-react";
-import { useParams, usePathname } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import UserItem from "./user-item";
@@ -28,12 +28,14 @@ import TrashBox from "./trash-box";
 import { useSearch } from "@/hooks/use-search";
 import { useSettings } from "@/hooks/use-settings";
 import Navbar from "./navbar";
+import { Id } from "@/convex/_generated/dataModel";
 
 const Navigation = () => {
   const search = useSearch();
   const settings = useSettings();
   const pathName = usePathname();
   const params = useParams();
+  const router = useRouter();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const isResizingRef = useRef(false);
   const sidebarRef = useRef<ElementRef<"aside">>(null);
@@ -103,11 +105,14 @@ const Navigation = () => {
   };
 
   const handleCreate = () => {
-    const promise = create({ title: "Untitled" });
+    const promise = create({ title: "Untitled" }).then((documentId) => {
+      console.log("??");
+      router.push(`/documents/${documentId}`);
+    });
 
     toast.promise(promise, {
       loading: "Creating a new note..",
-      success: "Note created!",
+      success: "Note created????",
       error: "Failed to create a new note.",
     });
   };
