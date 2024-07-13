@@ -1,10 +1,10 @@
 "use client";
 
-import { BlockNoteEditor, PartialBlock } from "@blocknote/core";
+import { BlockNoteEditor } from "@blocknote/core";
 import { useTheme } from "next-themes";
 import { BlockNoteView } from "@blocknote/mantine";
 import "@blocknote/mantine/style.css";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useEdgeStore } from "@/lib/edgestore";
 import { Doc } from "@/convex/_generated/dataModel";
 
