@@ -34,12 +34,6 @@ const Editor = ({ isEditable = true, onChange, document }: EditorProps) => {
     // eslint-disable-next-line
   }, []);
 
-  const handleUpload = async (file: File) => {
-    const response = await edgestore.publicFiles.upload({ file });
-
-    return response.url;
-  };
-
   return (
     <>
       <BlockNoteView
